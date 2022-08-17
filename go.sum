@@ -1,7 +1,5 @@
 github.com/bufbuild/connect-go v0.3.0 h1:B0vyZrTR11SNEYpodL6P0NzluDCsuqmr8CNKblXvVto=
 github.com/bufbuild/connect-go v0.3.0/go.mod h1:4efZ2eXFENwd4p7tuLaL9m0qtTsCOzuBvrohvRGevDM=
-github.com/go-training/proto-connect-demo v0.0.0-20220817135600-4eb2619aaaf2 h1:apseB96VHO/9J1mt5ykbj/N5tqDHT8BYzJfB7J5aPBc=
-github.com/go-training/proto-connect-demo v0.0.0-20220817135600-4eb2619aaaf2/go.mod h1:cFPyF6JisJI/dRD6H+2nwcQqEE8M/szQCCCPXK+0I5Q=
 github.com/golang/protobuf v1.5.0/go.mod h1:FsONVRAS9T7sI+LIUmWTfcYkHO4aIWwzhcaSAoJOfIk=
 github.com/google/go-cmp v0.5.5/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/go-cmp v0.5.8 h1:e6P7q2lk1O+qJJb4BtCQXlK8vWEO8V1ZeuEdJNOqZyg=
