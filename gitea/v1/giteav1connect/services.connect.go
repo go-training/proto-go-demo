@@ -28,6 +28,9 @@ const (
 // GiteaServiceClient is a client for the gitea.v1.GiteaService service.
 type GiteaServiceClient interface {
 	Gitea(context.Context, *connect_go.Request[v1.GiteaRequest]) (*connect_go.Response[v1.GiteaResponse], error)
+	// Introduce is a server-streaming request demo.  This method allows for a single request that will return a series
+	// of responses
+	Introduce(context.Context, *connect_go.Request[v1.IntroduceRequest]) (*connect_go.ServerStreamForClient[v1.IntroduceResponse], error)
 }
 
 // NewGiteaServiceClient constructs a client for the gitea.v1.GiteaService service. By default, it
@@ -45,12 +48,18 @@ func NewGiteaServiceClient(httpClient connect_go.HTTPClient, baseURL string, opt
 			baseURL+"/gitea.v1.GiteaService/Gitea",
 			opts...,
 		),
+		introduce: connect_go.NewClient[v1.IntroduceRequest, v1.IntroduceResponse](
+			httpClient,
+			baseURL+"/gitea.v1.GiteaService/Introduce",
+			opts...,
+		),
 	}
 }
 
 // giteaServiceClient implements GiteaServiceClient.
 type giteaServiceClient struct {
-	gitea *connect_go.Client[v1.GiteaRequest, v1.GiteaResponse]
+	gitea     *connect_go.Client[v1.GiteaRequest, v1.GiteaResponse]
+	introduce *connect_go.Client[v1.IntroduceRequest, v1.IntroduceResponse]
 }
 
 // Gitea calls gitea.v1.GiteaService.Gitea.
@@ -58,9 +67,17 @@ func (c *giteaServiceClient) Gitea(ctx context.Context, req *connect_go.Request[
 	return c.gitea.CallUnary(ctx, req)
 }
 
+// Introduce calls gitea.v1.GiteaService.Introduce.
+func (c *giteaServiceClient) Introduce(ctx context.Context, req *connect_go.Request[v1.IntroduceRequest]) (*connect_go.ServerStreamForClient[v1.IntroduceResponse], error) {
+	return c.introduce.CallServerStream(ctx, req)
+}
+
 // GiteaServiceHandler is an implementation of the gitea.v1.GiteaService service.
 type GiteaServiceHandler interface {
 	Gitea(context.Context, *connect_go.Request[v1.GiteaRequest]) (*connect_go.Response[v1.GiteaResponse], error)
+	// Introduce is a server-streaming request demo.  This method allows for a single request that will return a series
+	// of responses
+	Introduce(context.Context, *connect_go.Request[v1.IntroduceRequest], *connect_go.ServerStream[v1.IntroduceResponse]) error
 }
 
 // NewGiteaServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -75,6 +92,11 @@ func NewGiteaServiceHandler(svc GiteaServiceHandler, opts ...connect_go.HandlerO
 		svc.Gitea,
 		opts...,
 	))
+	mux.Handle("/gitea.v1.GiteaService/Introduce", connect_go.NewServerStreamHandler(
+		"/gitea.v1.GiteaService/Introduce",
+		svc.Introduce,
+		opts...,
+	))
 	return "/gitea.v1.GiteaService/", mux
 }
 
@@ -83,4 +105,8 @@ type UnimplementedGiteaServiceHandler struct{}
 
 func (UnimplementedGiteaServiceHandler) Gitea(context.Context, *connect_go.Request[v1.GiteaRequest]) (*connect_go.Response[v1.GiteaResponse], error) {
 	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("gitea.v1.GiteaService.Gitea is not implemented"))
+}
+
+func (UnimplementedGiteaServiceHandler) Introduce(context.Context, *connect_go.Request[v1.IntroduceRequest], *connect_go.ServerStream[v1.IntroduceResponse]) error {
+	return connect_go.NewError(connect_go.CodeUnimplemented, errors.New("gitea.v1.GiteaService.Introduce is not implemented"))
 }
